@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 100%;
+  width: 100%;
+  background: radial-gradient(
+    circle,
+    rgba(250, 255, 174, 0.514) 10%,
+    rgba(255, 245, 112, 0.774) 100%
+  );
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
