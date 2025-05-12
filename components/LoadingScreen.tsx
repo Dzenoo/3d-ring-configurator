@@ -30,10 +30,10 @@ const LoadingScreen: React.FC = () => {
   return (
     <div
       ref={scope}
-      className="fixed inset-0 top-0 right-0 bottom-0 left-0 z-50 flex h-full w-full flex-col items-center justify-center gap-5 bg-yellow-500"
+      className="fixed inset-0 top-0 right-0 bottom-0 left-0 z-50 flex h-full w-full flex-col items-center justify-center gap-5 bg-gradient-to-b from-yellow-50 to-yellow-100"
     >
       <Diamond className="text-yellow-900" />
-      <div className="mb-4 text-xs text-yellow-950">Loading... Please wait</div>
+      <div className="mb-4 text-yellow-950">Loading... Please wait</div>
       <div className="mx-auto w-96">
         <motion.div
           className="h-[1px] rounded-full bg-black"

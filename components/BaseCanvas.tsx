@@ -7,25 +7,25 @@ import { Bloom, EffectComposer } from "@react-three/postprocessing";
 
 import Ring from "./3d-models/Ring";
 import LoadingScreen from "./LoadingScreen";
-import { Leva } from "leva";
 
 const BaseCanvas: React.FC = () => {
   return (
     <>
       <LoadingScreen />
-      <Canvas
-        gl={{ antialias: true }}
-        dpr={[1, 2]}
-        camera={{ position: [5, 5, 10], fov: 29 }}
-      >
-        <ambientLight intensity={0.5} />
-        <directionalLight position={[5, 10, 7.5]} intensity={5} />
+      <Canvas dpr={[1, 2]} camera={{ position: [5, 5, 10], fov: 29 }}>
+        <ambientLight intensity={0.5 * Math.PI} />
+        <spotLight decay={0} position={[5, 5, -10]} angle={0.15} penumbra={1} />
+        <pointLight decay={0} position={[-10, -10, -10]} />
 
         <OrbitControls
+          makeDefault
           autoRotate
+          minPolarAngle={0}
+          maxPolarAngle={Math.PI / 2}
           minDistance={7.5}
           maxDistance={15}
           enableDamping={true}
+          dampingFactor={0.05}
           enablePan={false}
         />
 
@@ -40,11 +40,7 @@ const BaseCanvas: React.FC = () => {
         />
 
         <EffectComposer>
-          <Bloom
-            intensity={0.25}
-            luminanceThreshold={0.5}
-            luminanceSmoothing={0.1}
-          />
+          <Bloom luminanceThreshold={1} intensity={2} levels={9} mipmapBlur />
         </EffectComposer>
       </Canvas>
     </>

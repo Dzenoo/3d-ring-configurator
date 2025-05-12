@@ -1,9 +1,10 @@
 "use client";
 
 import * as THREE from "three";
+import { RGBELoader } from "three/examples/jsm/Addons.js";
 import { useLayoutEffect, useRef } from "react";
-import { useGLTF, MeshTransmissionMaterial } from "@react-three/drei";
-import { useFrame } from "@react-three/fiber";
+import { useGLTF, MeshRefractionMaterial } from "@react-three/drei";
+import { useFrame, useLoader } from "@react-three/fiber";
 import { easing } from "maath";
 import { useControls } from "leva";
 
@@ -19,13 +20,18 @@ const Ring: React.FC = () => {
     };
   };
 
+  const texture = useLoader(
+    RGBELoader,
+    "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/aerodynamics_workshop_1k.hdr",
+  );
+
   const { circle, gem, sticks, ring } = useControls({
     circle: {
       value: "#2d2d2d",
       label: "Circle Color",
     },
     gem: {
-      value: "#0a3d91",
+      value: "#648dce",
       label: "Gem Color",
     },
     sticks: {
@@ -90,18 +96,14 @@ const Ring: React.FC = () => {
         position={[0, 3.951, 0]}
         scale={1.018}
       >
-        <MeshTransmissionMaterial
-          transmission={0.75}
-          roughness={0.01}
-          thickness={2.0}
-          chromaticAberration={0.03}
-          ior={2.417}
+        <MeshRefractionMaterial
+          envMap={texture}
+          toneMapped={false}
+          bounces={3}
+          aberrationStrength={0.01}
+          ior={2.8}
+          fresnel={1.0}
           color={gem}
-          reflectivity={1.0}
-          clearcoat={1.0}
-          clearcoatRoughness={0.0}
-          attenuationDistance={0.5}
-          attenuationColor="white"
         />
       </mesh>
 

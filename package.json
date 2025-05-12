@@ -23,6 +23,7 @@
     "react-dom": "^19.0.0",
     "react-intersection-observer": "^9.16.0",
     "three": "^0.175.0",
+    "three-stdlib": "^2.36.0",
     "tweakpane": "^4.0.5",
     "zustand": "^5.0.3"
   },
