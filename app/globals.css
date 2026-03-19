@@ -16,9 +16,11 @@ canvas {
   height: 100%;
   width: 100%;
   background: radial-gradient(
-    circle,
-    rgba(250, 255, 174, 0.514) 10%,
-    rgba(255, 245, 112, 0.774) 100%
+    ellipse at 50% 40%,
+    #fefce8 0%,
+    #fef9c3 30%,
+    #fef08a 70%,
+    #fde047 100%
   );
 }
 

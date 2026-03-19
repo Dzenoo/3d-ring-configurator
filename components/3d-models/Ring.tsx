@@ -6,7 +6,7 @@ import { useLayoutEffect, useRef } from "react";
 import { useGLTF, MeshRefractionMaterial } from "@react-three/drei";
 import { useFrame, useLoader } from "@react-three/fiber";
 import { easing } from "maath";
-import { useControls } from "leva";
+import { useAppStore } from "@/store/app.store";
 
 const Ring: React.FC = () => {
   const ringRef = useRef<THREE.Group>(null);
@@ -25,30 +25,18 @@ const Ring: React.FC = () => {
     "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/aerodynamics_workshop_1k.hdr",
   );
 
-  const { circle, gem, sticks, ring } = useControls({
-    circle: {
-      value: "#2d2d2d",
-      label: "Circle Color",
-    },
-    gem: {
-      value: "#648dce",
-      label: "Gem Color",
-    },
-    sticks: {
-      value: "#C0C0C0",
-      label: "Sticks Color",
-    },
-    ring: {
-      value: "#FFD700",
-      label: "Ring Color",
-    },
-  });
+  const { circleColor, gemColor, sticksColor, ringColor } = useAppStore();
 
-  useFrame((state, delta) => {
+  useFrame((_state, delta) => {
     if (ringRef.current) {
-      easing.damp(ringRef.current.position, "x", 0, 1.5, delta);
-      easing.damp(ringRef.current.position, "y", -1, 1.5, delta);
-      easing.damp(ringRef.current.position, "z", 0, 1.5, delta);
+      // Smooth intro animation
+      easing.damp(ringRef.current.position, "x", 0, 1.2, delta);
+      easing.damp(ringRef.current.position, "y", -0.5, 1.2, delta);
+      easing.damp(ringRef.current.position, "z", 0, 1.2, delta);
+
+      // Subtle idle floating
+      const t = _state.clock.elapsedTime;
+      ringRef.current.position.y = -0.5 + Math.sin(t * 0.8) * 0.08;
     }
   });
 
@@ -56,7 +44,7 @@ const Ring: React.FC = () => {
     const updateScale = () => {
       if (ringRef.current) {
         const screenWidth = window.innerWidth;
-        const scale = screenWidth < 768 ? 0.3 : 1;
+        const scale = screenWidth < 768 ? 0.45 : 0.65;
         ringRef.current.scale.set(scale, scale, scale);
       }
     };
@@ -72,25 +60,28 @@ const Ring: React.FC = () => {
   return (
     <group
       position={[-3, 0, 2]}
-      rotation={[0.8, 1.5, 0]}
+      rotation={[0.4, 0, -0.2]}
       scale={0.9}
       ref={ringRef}
       dispose={null}
     >
+      {/* Gem setting base */}
       <mesh
         geometry={nodes.circle.geometry}
         position={[0, 2.942, 0]}
         scale={[0.512, 0.197, 0.512]}
       >
         <meshPhysicalMaterial
-          roughness={0.2}
-          metalness={0.8}
-          color={circle}
-          clearcoat={0.7}
-          clearcoatRoughness={0.1}
+          roughness={0.15}
+          metalness={0.9}
+          color={circleColor}
+          clearcoat={1.0}
+          clearcoatRoughness={0.05}
+          envMapIntensity={1.5}
         />
       </mesh>
 
+      {/* Gem */}
       <mesh
         geometry={nodes.gem.geometry}
         position={[0, 3.951, 0]}
@@ -99,14 +90,15 @@ const Ring: React.FC = () => {
         <MeshRefractionMaterial
           envMap={texture}
           toneMapped={false}
-          bounces={3}
-          aberrationStrength={0.01}
-          ior={2.8}
+          bounces={4}
+          aberrationStrength={0.015}
+          ior={2.75}
           fresnel={1.0}
-          color={gem}
+          color={gemColor}
         />
       </mesh>
 
+      {/* Prongs */}
       <mesh
         geometry={nodes.sticks.geometry}
         position={[0, 3.951, 0]}
@@ -114,13 +106,15 @@ const Ring: React.FC = () => {
       >
         <meshPhysicalMaterial
           metalness={1.0}
-          roughness={0.1}
-          color={sticks}
+          roughness={0.08}
+          color={sticksColor}
           clearcoat={1.0}
-          clearcoatRoughness={0.2}
+          clearcoatRoughness={0.1}
+          envMapIntensity={1.8}
         />
       </mesh>
 
+      {/* Band */}
       <mesh
         geometry={nodes.ring.geometry}
         rotation={[Math.PI / 2, 0, 0]}
@@ -129,7 +123,7 @@ const Ring: React.FC = () => {
         <meshPhysicalMaterial
           roughness={0.05}
           metalness={1.0}
-          color={ring}
+          color={ringColor}
           clearcoat={1.0}
           clearcoatRoughness={0.1}
         />

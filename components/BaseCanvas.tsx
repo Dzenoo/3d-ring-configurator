@@ -7,25 +7,26 @@ import { Bloom, EffectComposer } from "@react-three/postprocessing";
 
 import Ring from "./3d-models/Ring";
 import LoadingScreen from "./LoadingScreen";
+import ConfiguratorPanel from "./ConfiguratorPanel";
 
 const BaseCanvas: React.FC = () => {
   return (
     <>
       <LoadingScreen />
-      <Canvas dpr={[1, 2]} camera={{ position: [5, 5, 10], fov: 29 }}>
-        <ambientLight intensity={0.5 * Math.PI} />
-        <spotLight decay={0} position={[5, 5, -10]} angle={0.15} penumbra={1} />
-        <pointLight decay={0} position={[-10, -10, -10]} />
+      <ConfiguratorPanel />
+      <Canvas dpr={[1, 2]} camera={{ position: [0, 3, 14], fov: 25 }}>
+        <ambientLight intensity={0.3} />
 
         <OrbitControls
           makeDefault
           autoRotate
-          minPolarAngle={0}
-          maxPolarAngle={Math.PI / 2}
-          minDistance={7.5}
-          maxDistance={15}
+          autoRotateSpeed={0.8}
+          minPolarAngle={Math.PI / 6}
+          maxPolarAngle={Math.PI / 2.2}
+          minDistance={10}
+          maxDistance={20}
           enableDamping={true}
-          dampingFactor={0.05}
+          dampingFactor={0.04}
           enablePan={false}
         />
 
@@ -33,14 +34,15 @@ const BaseCanvas: React.FC = () => {
           <Ring />
         </Suspense>
 
-        <Environment
-          preset="apartment"
-          background={false}
-          environmentIntensity={1}
-        />
+        <Environment preset="studio" environmentIntensity={0.8} />
 
         <EffectComposer>
-          <Bloom luminanceThreshold={1} intensity={2} levels={9} mipmapBlur />
+          <Bloom
+            luminanceThreshold={1.2}
+            intensity={0.8}
+            levels={6}
+            mipmapBlur
+          />
         </EffectComposer>
       </Canvas>
     </>

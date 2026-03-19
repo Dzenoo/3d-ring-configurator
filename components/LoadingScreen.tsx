@@ -1,4 +1,6 @@
-import React, { useEffect } from "react";
+"use client";
+
+import { useEffect } from "react";
 import { useProgress } from "@react-three/drei";
 import { Diamond } from "lucide-react";
 import { motion, useAnimate } from "motion/react";
@@ -9,38 +11,58 @@ const LoadingScreen: React.FC = () => {
 
   useEffect(() => {
     if (progress === 100) {
-      const interval = setInterval(() => {
-        animate(
+      const timeout = setTimeout(async () => {
+        await animate(
           scope.current,
-          { transform: "translateX(100%)" },
-          { duration: 1, ease: "easeInOut", damping: 20 },
+          { opacity: 0 },
+          { duration: 0.8, ease: "easeInOut" },
         );
+        scope.current?.remove();
+      }, 800);
 
-        scope.animations.forEach((animation) => {
-          animation.finished.then(() => {
-            scope.current?.remove();
-          });
-        });
-      }, 1000);
-
-      return () => clearInterval(interval);
+      return () => clearTimeout(timeout);
     }
-  }, [progress]);
+  }, [progress, animate, scope]);
 
   return (
     <div
       ref={scope}
-      className="fixed inset-0 top-0 right-0 bottom-0 left-0 z-50 flex h-full w-full flex-col items-center justify-center gap-5 bg-gradient-to-b from-yellow-50 to-yellow-100"
+      className="fixed inset-0 z-50 flex h-full w-full flex-col items-center justify-center gap-6 bg-neutral-950"
     >
-      <Diamond className="text-yellow-900" />
-      <div className="mb-4 text-yellow-950">Loading... Please wait</div>
-      <div className="mx-auto w-96">
-        <motion.div
-          className="h-[1px] rounded-full bg-black"
-          initial={{ width: "0%" }}
-          animate={{ width: `${progress}%` }}
-          transition={{ ease: "linear", duration: 0.5 }}
-        />
+      <motion.div
+        animate={{ rotate: 360 }}
+        transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+      >
+        <Diamond size={24} className="text-amber-400" />
+      </motion.div>
+
+      <div className="flex flex-col items-center gap-4">
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="text-xs font-medium tracking-[0.3em] uppercase text-neutral-400"
+        >
+          Loading Experience
+        </motion.p>
+
+        <div className="w-48">
+          <div className="h-[1px] w-full bg-neutral-800">
+            <motion.div
+              className="h-full bg-gradient-to-r from-amber-400 to-amber-200"
+              initial={{ width: "0%" }}
+              animate={{ width: `${progress}%` }}
+              transition={{ ease: "linear", duration: 0.3 }}
+            />
+          </div>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="mt-2 text-center text-[10px] tabular-nums text-neutral-600"
+          >
+            {Math.round(progress)}%
+          </motion.p>
+        </div>
       </div>
     </div>
   );
